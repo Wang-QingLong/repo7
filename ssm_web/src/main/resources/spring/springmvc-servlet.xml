@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--配置注解扫描-->
+    <context:component-scan base-package="com.wang.ssm.controller"/>
+
+    <!--配置视图解析器-->
+    <bean  class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+
+    <!--配置自定义类型转换器-->
+
+    <!--先将spring转换器组件注入spring容器-->
+    <bean id="conversion" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <!--将我们自己写的类注册到上面组件中-->
+        <!--private Set<?> converters属性;-->
+        <property name="converters">
+            <set>
+              <bean class="com.wang.ssm.common.SpringMvcConverter"/>
+            </set>
+        </property>
+    </bean>
+
+
+
+    <!--开启springmvc注解的支持-->
+    <mvc:annotation-driven conversion-service="conversion"/>
+
+
+
+    <!--  allowed-origins="*"允许所有的域名都能访问
+          allowed-methods="*"  允许所有的请求方式都能访问（GET POST DELETE PUT）-->
+    <mvc:cors>
+        <mvc:mapping path="/**"
+                     allowed-origins="*"
+                     allowed-methods="*"/>
+    </mvc:cors>
+
+
+</beans>
